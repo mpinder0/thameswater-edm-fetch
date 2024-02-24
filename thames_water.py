@@ -69,7 +69,7 @@ def get_alert_events_for_site(site):
         alerts = df['AlertType']
 
         # save raw alerts data csv
-        df.to_csv(out_path.joinpath(site + '.csv'))
+        df.to_csv(out_path.joinpath(f'site {site}.csv'))
 
         # relate start and end alerts into events to get duration.
         start = None
@@ -103,5 +103,5 @@ events_df = pd.DataFrame(all_events)
 events_df['duration hours'] = events_df['duration'].apply(lambda ts: ts.total_seconds() / 3600)
 print(events_df.head())
 
-events_df.to_csv(out_path.joinpath('events.csv'))
+events_df.to_csv(out_path.joinpath('all sites summary.csv'))
 
