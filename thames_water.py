@@ -1,7 +1,3 @@
-"""
-Thames Water Open Data
-"""
-
 import river_secrets
 import requests
 import json
@@ -53,9 +49,12 @@ print(select.to_list())
 
 # https://prod-tw-opendata-app.uk-e1.cloudhub.io/data/STE/v1/DischargeAlerts?limit=10&col_1=LocationName&operand_1=eq&value_1=Harpenden&col_2=DateTime&operand_2=gte&value_2=2024-01-01
 
-def get_alert_events_for_site(site):
+def get_alert_events_for_site(site, q_start, q_end):
     alerts_endpoint = 'DischargeAlerts'
-    alerts_params = {'col_1': 'LocationName', 'operand_1':'eq', 'value_1':site, 'col_2':'DateTime', 'operand_2':'gte', 'value_2':'2024-01-01'}
+    alerts_params = {'limit': 500,
+                        'col_1': 'LocationName', 'operand_1':'eq', 'value_1': site, 
+                        'col_2':'DateTime', 'operand_2':'gte', 'value_2': q_start,
+                        'col_3':'DateTime', 'operand_3':'lte', 'value_3': q_end}
     
     df = api_call(alerts_endpoint, alerts_params)
     
@@ -90,11 +89,15 @@ def get_alert_events_for_site(site):
                     events.append(event)
     return events
 
+# Edit here to change sites of interest and timeframe
 sites = ['Barbers Lane', 'Harpenden', 'Kimpton Road (Vauxhall Rd)', 'Luton', 'New Bedford Road, Luton', 'Park Town South & West, Luton', 'Vauxhall Motors']
+start_date = "2024-01-01"
+end_date = "2024-02-24"
+# ---
 
 all_events = []
 for s in sites:
-    site_events = get_alert_events_for_site(s)
+    site_events = get_alert_events_for_site(s, start_date, end_date)
     all_events += site_events
     time.sleep(1)
 #all_events = get_alert_events_for_site(sites[1])
